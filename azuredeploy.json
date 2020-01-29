@@ -1,40 +1,56 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
-    "parameters": {},
-    "variables": {},
+    "parameters": {
+        "resprefix": {
+           "type": "string",
+           "metadata": {
+                "description": "Prefix for all the names"
+            }
+        },
+        "farmname": {
+           "type": "string",
+           "metadata": {
+                "description": "description"
+            }
+        } 
+    },
+    "variables": {
+        "farmnamevar": "[concat(parameters('farmname'), substring(uniqueString(subscription().subscriptionId), 0, 5))]",
+        "appnamevar": "[concat(parameters('resprefix'), substring(uniqueString(subscription().subscriptionId), 0, 5))]"    
+    },
     "resources": [
         {
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2016-09-01",
-            "name": "frankdemoplan534534",
+            "name": "[variables('farmnamevar')]",
             "location": "[resourceGroup().location]",
             "sku": {
                 "name": "F1",
                 "capacity": 1
             },
             "tags": {
-                "displayName": "frankdemoplan534534"
+                "displayName": "[variables('farmnamevar')]"
             },
             "properties": {
-                "name": "frankdemoplan534534"
+                "name": "[variables('farmnamevar')]"
             }
         },
         {
             "type": "Microsoft.Web/sites",
             "apiVersion": "2015-08-01",
-            "name": "frank3453demo424345343",
+            "name": "[variables('appnamevar')]",
             "location": "[resourceGroup().location]",
             "tags": {
                 "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/frankdemoplan')]": "Resource",
-                "displayName": "frank3453demo424345343"
+                "displayName": "[variables('appnamevar')]"
             },
             "dependsOn": [
-                "Microsoft.Web/serverfarms/frankdemoplan534534"
+                "[resourceId('Microsoft.Web/serverfarms/', variables('farmnamevar'))]"
             ],
             "properties": {
-                "name": "frank3453demo424345343",
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms/', 'frankdemoplan534534')]"
+                "name": "[variables('appnamevar')]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms/', variables('farmnamevar'))]"
             }
         }
     ],
