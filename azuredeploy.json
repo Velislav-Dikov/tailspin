@@ -54,6 +54,15 @@
             }
         }
     ],
-    "outputs": {}
+    "outputs": {
+        "varappname": {
+           "type": "string",
+           "value": "[variables('appnamevar')]"
+        },
+        "varfarmname": {
+           "type": "string",
+           "value": "[variables('farmnamevar')]"
+        }
+    }
     
 }
